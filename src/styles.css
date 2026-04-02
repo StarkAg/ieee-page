@@ -680,8 +680,10 @@ select {
 .cta-meta div::after {
   inset: 0;
   background: linear-gradient(115deg, transparent 18%, rgba(245, 231, 184, 0.05) 46%, transparent 72%);
+  transform: translateX(-135%);
+  animation: commandDeckShine 7.6s ease-in-out infinite;
   z-index: 0;
-  opacity: 0.38;
+  opacity: 0.42;
 }
 
 .hero-panel > *,
