@@ -1,12 +1,8 @@
-import { Suspense, lazy, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const OceanScene = lazy(() =>
-  import("./components/OceanScene").then((module) => ({ default: module.OceanScene })),
-);
 
 const heroFacts = ["Turing Hall", "First 30 teams", "₹199 per team", "1-5 founders"];
 
@@ -181,8 +177,44 @@ const ruleGroups = [
 function App() {
   const rootRef = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [backgroundVideo, setBackgroundVideo] = useState(() => {
+    if (typeof window !== "undefined" && window.matchMedia("(max-width: 820px)").matches) {
+      return "/media/one-piece-phone-bg.mp4";
+    }
+
+    return "/media/startup-pitch-event-bg.mp4";
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return undefined;
+    }
+
+    const mediaQuery = window.matchMedia("(max-width: 820px)");
+    const syncBackgroundVideo = () => {
+      setBackgroundVideo(
+        mediaQuery.matches ? "/media/one-piece-phone-bg.mp4" : "/media/startup-pitch-event-bg.mp4",
+      );
+    };
+
+    syncBackgroundVideo();
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener("change", syncBackgroundVideo);
+    } else {
+      mediaQuery.addListener(syncBackgroundVideo);
+    }
+
+    return () => {
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener("change", syncBackgroundVideo);
+      } else {
+        mediaQuery.removeListener(syncBackgroundVideo);
+      }
+    };
+  }, []);
 
   useLayoutEffect(() => {
+    const media = gsap.matchMedia();
     const ctx = gsap.context(() => {
       const intro = gsap.timeline({
         defaults: {
@@ -217,23 +249,6 @@ function App() {
           "-=0.65",
         );
 
-      gsap.to(".floating-badge", {
-        y: -14,
-        duration: 3.4,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-      });
-
-      // gsap.to(".hero-orbit", {
-      //   y: 10,
-      //   x: -8,
-      //   duration: 4.6,
-      //   repeat: -1,
-      //   yoyo: true,
-      //   ease: "sine.inOut",
-      // });
-
       gsap.utils.toArray(".reveal").forEach((section, index) => {
         gsap.from(section, {
           opacity: 0,
@@ -247,82 +262,49 @@ function App() {
         });
       });
 
-      gsap.to(".hero-panel", {
-        rotation: 1.3,
-        transformOrigin: "50% 0%",
-        duration: 3.8,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-      });
-
-      gsap.utils
-        .toArray(
-          [
-            ".floating-badge",
-            ".hero-orbit",
-            ".signal-card",
-            ".manifest-card",
-            ".mechanic-card",
-            ".timeline-card",
-            ".award-card",
-            ".rules-aside",
-            ".directive-card",
-            ".rule-card",
-            ".cta-panel",
-            ".cta-meta div",
-          ].join(", "),
-        )
-        .forEach((box, index) => {
-          gsap.to(box, {
-            y: index % 2 === 0 ? -10 : 10,
-            x: index % 3 === 0 ? -4 : 4,
-            rotation: index % 2 === 0 ? -0.6 : 0.6,
-            duration: 4.4 + (index % 4) * 0.45,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-          });
+      media.add("(min-width: 821px) and (prefers-reduced-motion: no-preference)", () => {
+        gsap.to(".floating-badge", {
+          y: -10,
+          duration: 3.8,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
         });
+
+        gsap.to(".hero-panel", {
+          rotation: 0.85,
+          transformOrigin: "50% 0%",
+          duration: 4.6,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+        });
+
+        gsap.to(".hero-orbit", {
+          rotation: 1.6,
+          transformOrigin: "50% -10%",
+          duration: 4.8,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+        });
+      });
     }, rootRef);
 
-    return () => ctx.revert();
+    return () => {
+      media.revert();
+      ctx.revert();
+    };
   }, []);
 
   return (
     <div className="site-shell" ref={rootRef}>
       <div className="site-video-shell" aria-hidden="true">
-        <video
-          autoPlay
-          className="site-video site-video-desktop"
-          loop
-          muted
-          playsInline
-          preload="auto"
-        >
-          <source src="/media/startup-pitch-event-bg.mp4" type="video/mp4" />
-        </video>
-        <video
-          autoPlay
-          className="site-video site-video-mobile"
-          loop
-          muted
-          playsInline
-          preload="auto"
-        >
-          <source src="/media/one-piece-phone-bg.mp4" type="video/mp4" />
+        <video autoPlay className="site-video" loop muted playsInline preload="metadata">
+          <source src={backgroundVideo} type="video/mp4" />
         </video>
         <div className="site-video-overlay" />
       </div>
-
-      <div className="scene-shell" aria-hidden="true">
-        <Suspense fallback={<div className="scene-fallback" />}>
-          <OceanScene />
-        </Suspense>
-      </div>
-
-      <div className="scene-aura scene-aura-left" aria-hidden="true" />
-      <div className="scene-aura scene-aura-right" aria-hidden="true" />
 
       <header className="page-chrome">
         <a className="brand" href="#hero">

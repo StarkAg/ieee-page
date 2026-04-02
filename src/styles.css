@@ -72,11 +72,8 @@ select {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
   filter: saturate(0.92) brightness(0.42) contrast(1.08);
-}
-
-.site-video-mobile {
-  display: none;
 }
 
 .site-video-overlay {
@@ -99,44 +96,6 @@ select {
       rgba(233, 193, 118, 0.014) 96px
     ),
     linear-gradient(180deg, rgba(5, 6, 8, 0.32), rgba(5, 6, 8, 0.62) 52%, rgba(5, 6, 8, 0.84));
-}
-
-.scene-shell {
-  position: fixed;
-  inset: 0;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 0;
-  mask-image: radial-gradient(circle at 50% 24%, black 0%, black 18%, transparent 76%);
-}
-
-.scene-shell canvas,
-.scene-fallback {
-  width: 100%;
-  height: 100%;
-}
-
-.scene-aura {
-  position: fixed;
-  pointer-events: none;
-  z-index: 0;
-  filter: blur(38px);
-}
-
-.scene-aura-left {
-  top: 10rem;
-  left: -6rem;
-  width: 22rem;
-  height: 22rem;
-  display: none;
-}
-
-.scene-aura-right {
-  top: 8rem;
-  right: -7rem;
-  width: 28rem;
-  height: 28rem;
-  display: none;
 }
 
 .page-chrome,
@@ -531,7 +490,7 @@ select {
 .floating-badge {
   position: absolute;
   left: 0;
-  bottom: 3rem;
+  bottom: 8rem;
   z-index: 3;
   width: min(17rem, 54%);
   padding: 1rem 1.1rem;
@@ -539,6 +498,7 @@ select {
   background: rgba(233, 193, 118, 0.1);
   border: 1px solid rgba(233, 193, 118, 0.3);
   text-align: left;
+  will-change: transform;
 }
 
 .floating-badge span,
@@ -720,9 +680,8 @@ select {
 .cta-meta div::after {
   inset: 0;
   background: linear-gradient(115deg, transparent 18%, rgba(245, 231, 184, 0.05) 46%, transparent 72%);
-  transform: translateX(-135%);
-  animation: commandDeckShine 7.6s ease-in-out infinite;
   z-index: 0;
+  opacity: 0.38;
 }
 
 .hero-panel > *,
@@ -1271,13 +1230,7 @@ select {
     width: min(1240px, calc(100% - 1.3rem));
   }
 
-  .site-video-desktop {
-    display: none;
-  }
-
-  .site-video-mobile {
-    display: block;
-    object-position: center center;
+  .site-video {
     transform: scale(1.08);
   }
 
@@ -1285,9 +1238,18 @@ select {
     grid-template-columns: 1fr;
   }
 
-  .scene-shell {
-    opacity: 0;
-    mask-image: radial-gradient(circle at 50% 14%, black 0%, black 22%, transparent 72%);
+  .page-chrome,
+  .hero-panel,
+  .floating-badge,
+  .hero-orbit,
+  .manifest-card,
+  .mechanic-card,
+  .timeline-card,
+  .award-card,
+  .rule-card,
+  .rules-aside,
+  .cta-panel {
+    backdrop-filter: none;
   }
 }
 

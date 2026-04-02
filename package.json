@@ -8,10 +8,17 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "keywords": [],
+  "keywords": [
+    "one-piece",
+    "react",
+    "vite",
+    "gsap",
+    "event-landing-page",
+    "startup-summit"
+  ],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "One Piece themed startup summit landing page for Treasure Hunt for Unicorns 2026.",
   "dependencies": {
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
