@@ -1,0 +1,1382 @@
+@import url("https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Inter:wght@400;500;600;700;800&family=Pirata+One&family=Space+Grotesk:wght@400;500;700&display=swap");
+
+:root {
+  color-scheme: dark;
+  font-family: "Inter", sans-serif;
+  --bg: #0b0908;
+  --bg-deep: #050403;
+  --surface-low: #15110f;
+  --surface: #1c1613;
+  --surface-high: #2a211c;
+  --surface-top: #362a22;
+  --text: #f5e7b8;
+  --cream: #f5e7b8;
+  --muted: #d1c5b4;
+  --soft: #d7c4a1;
+  --gold: #e9c176;
+  --gold-deep: #c5a059;
+  --red: #b63a2d;
+  --red-deep: #7e1e18;
+  --dark-outline: #2d140b;
+  --line: rgba(78, 70, 57, 0.42);
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #050608;
+  color: var(--text);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.site-shell {
+  position: relative;
+  overflow: hidden;
+}
+
+.site-video-shell {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.site-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.92) brightness(0.42) contrast(1.08);
+}
+
+.site-video-mobile {
+  display: none;
+}
+
+.site-video-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at center top, rgba(233, 193, 118, 0.08), transparent 26%),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 95px,
+      rgba(233, 193, 118, 0.018) 95px,
+      rgba(233, 193, 118, 0.018) 96px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 95px,
+      rgba(233, 193, 118, 0.014) 95px,
+      rgba(233, 193, 118, 0.014) 96px
+    ),
+    linear-gradient(180deg, rgba(5, 6, 8, 0.32), rgba(5, 6, 8, 0.62) 52%, rgba(5, 6, 8, 0.84));
+}
+
+.scene-shell {
+  position: fixed;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  mask-image: radial-gradient(circle at 50% 24%, black 0%, black 18%, transparent 76%);
+}
+
+.scene-shell canvas,
+.scene-fallback {
+  width: 100%;
+  height: 100%;
+}
+
+.scene-aura {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(38px);
+}
+
+.scene-aura-left {
+  top: 10rem;
+  left: -6rem;
+  width: 22rem;
+  height: 22rem;
+  display: none;
+}
+
+.scene-aura-right {
+  top: 8rem;
+  right: -7rem;
+  width: 28rem;
+  height: 28rem;
+  display: none;
+}
+
+.page-chrome,
+.content,
+.footer {
+  position: relative;
+  z-index: 1;
+}
+
+.page-chrome {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 1.15rem clamp(1.25rem, 3vw, 3rem);
+  background: rgba(10, 8, 7, 0.72);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid rgba(233, 193, 118, 0.14);
+}
+
+.brand {
+  font-family: "Pirata One", serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: 0.08rem;
+  text-transform: uppercase;
+  color: var(--cream);
+  text-shadow:
+    0 1px 0 var(--gold-deep),
+    0 2px 0 #5f4416,
+    0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.3rem;
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0.16rem;
+  text-transform: uppercase;
+  color: rgba(245, 231, 184, 0.88);
+}
+
+.nav a {
+  transition: color 180ms ease;
+}
+
+.nav a:hover,
+.nav a:focus-visible {
+  color: var(--gold);
+}
+
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  margin-left: auto;
+  padding: 0;
+  border: 1px solid rgba(233, 193, 118, 0.24);
+  background: rgba(26, 18, 14, 0.76);
+  color: var(--cream);
+  cursor: pointer;
+}
+
+.nav-toggle span {
+  position: absolute;
+  width: 1.2rem;
+  height: 2px;
+  background: var(--gold);
+  transition:
+    transform 180ms ease,
+    opacity 180ms ease;
+}
+
+.nav-toggle span:nth-child(1) {
+  transform: translateY(-0.35rem);
+}
+
+.nav-toggle span:nth-child(3) {
+  transform: translateY(0.35rem);
+}
+
+.nav-toggle.is-open span:nth-child(1) {
+  transform: rotate(45deg);
+}
+
+.nav-toggle.is-open span:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-toggle.is-open span:nth-child(3) {
+  transform: rotate(-45deg);
+}
+
+.content {
+  width: min(1240px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding-top: 5.8rem;
+  padding-bottom: 5rem;
+}
+
+.section {
+  padding: 7rem 0;
+}
+
+.hero {
+  position: relative;
+  min-height: calc(100vh - 5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding-top: 5rem;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 4rem;
+  left: 50%;
+  width: min(34rem, 82vw);
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 48%, rgba(233, 193, 118, 0.11) 48%, rgba(233, 193, 118, 0.11) 49%, transparent 49%),
+    radial-gradient(circle, transparent 67%, rgba(233, 193, 118, 0.08) 67%, rgba(233, 193, 118, 0.08) 68%, transparent 68%),
+    linear-gradient(90deg, transparent 49.5%, rgba(233, 193, 118, 0.08) 49.5%, rgba(233, 193, 118, 0.08) 50.5%, transparent 50.5%),
+    linear-gradient(0deg, transparent 49.5%, rgba(233, 193, 118, 0.08) 49.5%, rgba(233, 193, 118, 0.08) 50.5%, transparent 50.5%);
+  opacity: 0.65;
+  filter: blur(0.2px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 2;
+  max-width: 72rem;
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.44rem;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.hero h1,
+.section-heading h2,
+.hero-panel h2,
+.cta-panel h2,
+.manifest-card h3,
+.mechanic-card h3,
+.timeline-card h3,
+.award-card h3,
+.rule-card h3,
+.rules-aside h3 {
+  margin: 0;
+  font-family: "Pirata One", serif;
+  font-weight: 400;
+}
+
+.hero h1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  font-size: clamp(3.4rem, 9vw, 6.9rem);
+  line-height: 0.92;
+  color: var(--cream);
+  text-shadow:
+    0 2px 0 var(--gold-deep),
+    0 4px 0 #6f4d14,
+    0 0 18px rgba(233, 193, 118, 0.16);
+}
+
+.hero-title-top {
+  font-size: clamp(2rem, 4vw, 2.7rem);
+  letter-spacing: 0.05rem;
+  -webkit-text-stroke: 1.5px var(--dark-outline);
+}
+
+.hero-title-mark {
+  color: #d54a3f;
+  font-style: normal;
+  -webkit-text-stroke: 1.5px #ffe3a4;
+  text-shadow:
+    0 2px 0 var(--red-deep),
+    0 4px 0 #4a0910,
+    0 0 18px rgba(214, 78, 63, 0.16);
+}
+
+.hero-title-bottom {
+  max-width: 9ch;
+  -webkit-text-stroke: 1.5px var(--dark-outline);
+}
+
+.hero-text,
+.panel-facts p,
+.hero-panel p,
+.manifest-body,
+.manifest-card p,
+.mechanic-card p,
+.timeline-card p,
+.award-card p,
+.rule-card li,
+.rules-aside p,
+.cta-text,
+.section-copy,
+.footer,
+.footer-note {
+  color: var(--soft);
+  line-height: 1.76;
+}
+
+.hero-text {
+  max-width: 44rem;
+  margin: 1.7rem auto 0;
+  font-size: 1.12rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2.2rem;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.45rem;
+  padding: 0.95rem 1.6rem;
+  border-radius: 0.3rem;
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.94rem;
+  font-weight: 400;
+  letter-spacing: 0.22rem;
+  text-transform: uppercase;
+  transition:
+    transform 180ms ease,
+    background 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease;
+}
+
+.button:hover,
+.button:focus-visible {
+  transform: translateY(-2px);
+}
+
+.button-primary {
+  background: linear-gradient(180deg, #f0d38a, #c79a45);
+  color: #3e2500;
+  box-shadow: 0 0 30px rgba(233, 193, 118, 0.2);
+}
+
+.button-secondary {
+  border: 1px solid rgba(214, 78, 63, 0.44);
+  color: #ffcf91;
+  background: linear-gradient(180deg, rgba(182, 58, 45, 0.26), rgba(126, 30, 24, 0.18));
+}
+
+.stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 2rem;
+}
+
+.stat-chip {
+  padding: 0.8rem 1rem;
+  border-radius: 999px;
+  background: rgba(20, 16, 13, 0.78);
+  border: 1px solid rgba(78, 70, 57, 0.42);
+  color: var(--cream);
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.hero-stage {
+  position: relative;
+  width: min(1040px, 100%);
+  min-height: 21rem;
+  margin-top: 3rem;
+  z-index: 2;
+}
+
+.hero-panel,
+.floating-badge,
+.hero-orbit,
+.manifest-card,
+.mechanic-card,
+.timeline-card,
+.award-card,
+.rule-card,
+.rules-aside,
+.cta-panel {
+  background: rgba(24, 19, 16, 0.82);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow);
+}
+
+.hero-panel,
+.manifest-card,
+.mechanic-card,
+.timeline-card,
+.award-card,
+.rule-card,
+.rules-aside,
+.cta-panel {
+  border: 1px solid rgba(78, 70, 57, 0.28);
+}
+
+.hero-panel {
+  position: relative;
+  z-index: 2;
+  width: min(31rem, 100%);
+  margin: 0 auto;
+  padding: 1.9rem;
+  border-radius: 0.4rem;
+  background:
+    linear-gradient(180deg, rgba(40, 28, 20, 0.94), rgba(14, 10, 8, 0.97)),
+    rgba(24, 19, 16, 0.82);
+}
+
+.panel-kicker,
+.card-tag,
+.timeline-time,
+.cta-meta span,
+.hero-orbit span {
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.18rem;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.hero-panel h2 {
+  margin-top: 0.55rem;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.02;
+}
+
+.panel-facts {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1.45rem;
+}
+
+.signal-card {
+  padding: 1rem 1.05rem;
+  border-left: 2px solid rgba(233, 193, 118, 0.28);
+  background:
+    linear-gradient(90deg, rgba(233, 193, 118, 0.06), transparent 28%),
+    rgba(33, 25, 20, 0.7);
+}
+
+.signal-card h3 {
+  margin: 0 0 0.4rem;
+  font-family: "Pirata One", serif;
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: var(--cream);
+}
+
+.signal-card p {
+  margin: 0;
+  font-size: 0.94rem;
+}
+
+.floating-badge {
+  position: absolute;
+  left: 0;
+  bottom: 3rem;
+  z-index: 3;
+  width: min(17rem, 54%);
+  padding: 1rem 1.1rem;
+  border-radius: 0.35rem;
+  background: rgba(233, 193, 118, 0.1);
+  border: 1px solid rgba(233, 193, 118, 0.3);
+  text-align: left;
+}
+
+.floating-badge span,
+.floating-badge strong {
+  display: block;
+}
+
+.floating-badge span {
+  margin-bottom: 0.35rem;
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.18rem;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.floating-badge strong {
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.hero-orbit {
+  position: absolute;
+  top: -1.5rem;
+  right: -0.8rem;
+  z-index: 4;
+  width: min(18rem, 55%);
+  padding: 1.25rem;
+  border-radius: 0.35rem;
+  text-align: left;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(233, 193, 118, 0.14), transparent 24%),
+    linear-gradient(135deg, rgba(182, 58, 45, 0.16), transparent 32%),
+    linear-gradient(180deg, rgba(53, 36, 25, 0.98), rgba(21, 14, 10, 0.98));
+  border: 1px solid rgba(233, 193, 118, 0.34);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(233, 193, 118, 0.08);
+  transform-origin: 65% 50%;
+  animation: commandDeckGlow 4.6s ease-in-out infinite;
+}
+
+.hero-orbit::before,
+.hero-orbit::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.hero-orbit::before {
+  top: -1.6rem;
+  right: -1.3rem;
+  width: 7.4rem;
+  height: 7.4rem;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 52%, rgba(233, 193, 118, 0.18) 52%, rgba(233, 193, 118, 0.18) 54%, transparent 54%),
+    linear-gradient(90deg, transparent 49%, rgba(233, 193, 118, 0.15) 49%, rgba(233, 193, 118, 0.15) 51%, transparent 51%),
+    linear-gradient(0deg, transparent 49%, rgba(233, 193, 118, 0.15) 49%, rgba(233, 193, 118, 0.15) 51%, transparent 51%);
+  opacity: 0.42;
+  transform: rotate(18deg);
+}
+
+.hero-orbit::after {
+  inset: 0;
+  background: linear-gradient(115deg, transparent 15%, rgba(245, 231, 184, 0.08) 45%, transparent 70%);
+  transform: translateX(-125%);
+  animation: commandDeckShine 5.8s ease-in-out infinite;
+}
+
+.hero-orbit > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-orbit-grid {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 1rem;
+}
+
+.hero-orbit-grid div {
+  padding: 0.55rem 0.7rem;
+  background:
+    linear-gradient(90deg, rgba(233, 193, 118, 0.05), transparent 72%),
+    rgba(18, 12, 9, 0.34);
+  border-left: 2px solid rgba(233, 193, 118, 0.2);
+}
+
+.hero-orbit-grid strong {
+  display: block;
+  margin-top: 0.32rem;
+  color: var(--text);
+  font-size: 0.98rem;
+  line-height: 1.42;
+}
+
+.hero-panel,
+.signal-card,
+.floating-badge,
+.hero-orbit-grid div,
+.manifest-card,
+.mechanic-card,
+.timeline-card,
+.award-card,
+.rule-card,
+.rules-aside,
+.cta-meta div {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hero-panel::before,
+.signal-card::before,
+.floating-badge::before,
+.hero-orbit-grid div::before,
+.manifest-card::before,
+.mechanic-card::before,
+.timeline-card::before,
+.award-card::before,
+.rule-card::before,
+.rules-aside::before,
+.cta-meta div::before,
+.hero-panel::after,
+.signal-card::after,
+.floating-badge::after,
+.hero-orbit-grid div::after,
+.manifest-card::after,
+.mechanic-card::after,
+.timeline-card::after,
+.award-card::after,
+.rule-card::after,
+.rules-aside::after,
+.cta-meta div::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.hero-panel::before,
+.signal-card::before,
+.floating-badge::before,
+.hero-orbit-grid div::before,
+.manifest-card::before,
+.mechanic-card::before,
+.timeline-card::before,
+.award-card::before,
+.rule-card::before,
+.rules-aside::before,
+.cta-meta div::before {
+  top: -2.1rem;
+  right: -2.1rem;
+  width: 6.2rem;
+  height: 6.2rem;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 56%, rgba(233, 193, 118, 0.08) 56%, rgba(233, 193, 118, 0.08) 58%, transparent 58%),
+    linear-gradient(90deg, transparent 49%, rgba(233, 193, 118, 0.08) 49%, rgba(233, 193, 118, 0.08) 51%, transparent 51%),
+    linear-gradient(0deg, transparent 49%, rgba(233, 193, 118, 0.08) 49%, rgba(233, 193, 118, 0.08) 51%, transparent 51%);
+  opacity: 0.35;
+  transform: rotate(14deg);
+  z-index: 0;
+}
+
+.hero-panel::after,
+.signal-card::after,
+.floating-badge::after,
+.hero-orbit-grid div::after,
+.manifest-card::after,
+.mechanic-card::after,
+.timeline-card::after,
+.award-card::after,
+.rule-card::after,
+.rules-aside::after,
+.cta-meta div::after {
+  inset: 0;
+  background: linear-gradient(115deg, transparent 18%, rgba(245, 231, 184, 0.05) 46%, transparent 72%);
+  transform: translateX(-135%);
+  animation: commandDeckShine 7.6s ease-in-out infinite;
+  z-index: 0;
+}
+
+.hero-panel > *,
+.signal-card > *,
+.floating-badge > *,
+.hero-orbit-grid div > *,
+.manifest-card > *,
+.mechanic-card > *,
+.timeline-card > *,
+.award-card > *,
+.rule-card > *,
+.rules-aside > *,
+.cta-meta div > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes commandDeckGlow {
+  0%,
+  100% {
+    box-shadow:
+      0 24px 60px rgba(0, 0, 0, 0.34),
+      0 0 0 1px rgba(233, 193, 118, 0.08);
+  }
+
+  50% {
+    box-shadow:
+      0 28px 68px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(233, 193, 118, 0.12),
+      0 0 20px rgba(233, 193, 118, 0.1);
+  }
+}
+
+@keyframes commandDeckShine {
+  0%,
+  100% {
+    transform: translateX(-125%);
+  }
+
+  55% {
+    transform: translateX(125%);
+  }
+}
+
+.section-heading {
+  margin-bottom: 2rem;
+  max-width: 42rem;
+}
+
+.section-heading-split {
+  max-width: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 27rem);
+  gap: 1.5rem;
+  align-items: end;
+}
+
+.section-heading h2,
+.cta-panel h2 {
+  font-size: clamp(2.3rem, 5vw, 4.4rem);
+  line-height: 1.02;
+  color: var(--cream);
+  text-shadow: 0 2px 0 rgba(45, 20, 11, 0.7);
+}
+
+.section-copy {
+  margin: 0;
+  max-width: 28rem;
+  text-align: right;
+}
+
+#overview {
+  background: linear-gradient(180deg, rgba(18, 14, 12, 0.9), rgba(18, 14, 12, 0.74));
+}
+
+#overview .section-heading,
+#overview .overview-grid {
+  padding-inline: clamp(1rem, 2.4vw, 2.2rem);
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: 1.02fr 1.18fr;
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.manifest-card {
+  padding: 2rem 2.1rem;
+  border-radius: 0.3rem;
+}
+
+.manifest-card-copy {
+  grid-row: span 2;
+}
+
+.manifest-body {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.manifest-list {
+  margin: 1.5rem 0 0;
+  padding-left: 1.15rem;
+}
+
+.manifest-list li + li {
+  margin-top: 0.8rem;
+}
+
+.manifest-card blockquote {
+  margin: 0;
+  font-family: "Pirata One", serif;
+  font-size: clamp(1.45rem, 2.3vw, 2rem);
+  font-weight: 400;
+  line-height: 1.28;
+  color: var(--cream);
+}
+
+.manifest-card-quote {
+  background:
+    linear-gradient(180deg, rgba(27, 21, 17, 0.82), rgba(12, 9, 8, 0.9)),
+    rgba(24, 19, 16, 0.82);
+}
+
+.manifest-card-signal {
+  background:
+    linear-gradient(135deg, rgba(233, 193, 118, 0.14), transparent 38%),
+    rgba(42, 27, 20, 0.9);
+}
+
+#mechanics {
+  position: relative;
+  overflow: hidden;
+}
+
+#mechanics::before {
+  content: "";
+  position: absolute;
+  right: -8%;
+  top: 0;
+  width: 38%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(10, 8, 7, 0.82), rgba(36, 27, 22, 0.18));
+  transform: skewX(-14deg);
+  pointer-events: none;
+}
+
+#mechanics .section-heading {
+  position: relative;
+  z-index: 3;
+  text-align: right;
+  margin-bottom: 2.4rem;
+}
+
+#mechanics .section-copy {
+  justify-self: end;
+  max-width: 30rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid rgba(233, 193, 118, 0.24);
+  background:
+    linear-gradient(135deg, rgba(233, 193, 118, 0.08), transparent 36%),
+    rgba(30, 21, 16, 0.78);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+}
+
+.mechanics-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  border: 1px solid rgba(78, 70, 57, 0.25);
+}
+
+.mechanic-card,
+.award-card {
+  padding: 2rem;
+  border-radius: 0;
+}
+
+.mechanic-card + .mechanic-card {
+  border-left: 1px solid rgba(78, 70, 57, 0.25);
+}
+
+.mechanic-card:nth-child(2) {
+  position: relative;
+  z-index: 2;
+  margin-top: -1.75rem;
+  margin-bottom: -1.75rem;
+  background: rgba(43, 31, 24, 0.96);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+}
+
+.mechanic-card span {
+  display: inline-flex;
+  margin-bottom: 1rem;
+  color: var(--gold);
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0.12rem;
+}
+
+.mechanic-card h3,
+.timeline-card h3,
+.award-card h3,
+.rule-card h3,
+.rules-aside h3,
+.manifest-card h3 {
+  margin: 0 0 0.8rem;
+  font-size: 1.45rem;
+  line-height: 1.12;
+}
+
+#schedule {
+  background: linear-gradient(180deg, rgba(18, 14, 12, 0.84), rgba(18, 14, 12, 0.74));
+}
+
+#schedule .section-heading {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+#schedule .section-copy {
+  max-width: 40rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.timeline {
+  position: relative;
+  display: grid;
+  gap: 2rem;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--gold), transparent);
+  transform: translateX(-50%);
+}
+
+.timeline-card {
+  position: relative;
+  width: calc(50% - 3rem);
+  padding: 1.55rem 1.65rem;
+  border-radius: 0.25rem;
+}
+
+.timeline-card:nth-child(odd) {
+  margin-right: auto;
+  text-align: right;
+}
+
+.timeline-card:nth-child(even) {
+  margin-left: auto;
+}
+
+.timeline-card::before {
+  content: "";
+  position: absolute;
+  top: 1.6rem;
+  width: 0.9rem;
+  height: 0.9rem;
+  background: var(--bg);
+  border: 2px solid var(--gold);
+  transform: rotate(45deg);
+}
+
+.timeline-card:nth-child(odd)::before {
+  right: -3.5rem;
+}
+
+.timeline-card:nth-child(even)::before {
+  left: -3.5rem;
+}
+
+.timeline-time {
+  margin: 0 0 0.6rem;
+}
+
+#awards .section-heading {
+  max-width: none;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+#awards .section-heading::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  margin-bottom: 1rem;
+  background: rgba(78, 70, 57, 0.5);
+}
+
+.awards-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1rem;
+}
+
+.award-card {
+  min-height: 16rem;
+  border-radius: 0.2rem;
+}
+
+.award-card:first-child {
+  min-height: 21rem;
+  border-top: 2px solid var(--gold);
+  background:
+    linear-gradient(135deg, rgba(233, 193, 118, 0.12), transparent 34%),
+    rgba(41, 29, 22, 0.94);
+}
+
+#rules {
+  background:
+    linear-gradient(180deg, rgba(18, 14, 12, 0.84), rgba(18, 14, 12, 0.74)),
+    rgba(18, 14, 12, 0.74);
+  border-top: 1px solid rgba(78, 70, 57, 0.18);
+  border-bottom: 1px solid rgba(78, 70, 57, 0.18);
+}
+
+#rules .section-heading,
+#rules .rules-command,
+#rules .rules-grid {
+  padding-inline: clamp(1rem, 2.4vw, 2.2rem);
+}
+
+.rules-command {
+  display: grid;
+  grid-template-columns: minmax(360px, 1.05fr) minmax(0, 1.15fr);
+  gap: 1.4rem;
+  align-items: start;
+  margin-bottom: 1.2rem;
+}
+
+.rules-aside {
+  padding: 1.85rem;
+  border-radius: 0.28rem;
+}
+
+.rules-directives {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.directive-card {
+  min-height: 100%;
+  padding: 1.25rem 1.15rem;
+  border: 1px solid rgba(78, 70, 57, 0.26);
+  background:
+    linear-gradient(135deg, rgba(233, 193, 118, 0.08), transparent 40%),
+    rgba(35, 26, 21, 0.74);
+}
+
+.directive-card span {
+  display: inline-flex;
+  margin-bottom: 0.8rem;
+  color: var(--gold);
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.84rem;
+  letter-spacing: 0.14rem;
+}
+
+.directive-card p {
+  margin: 0;
+  color: var(--cream);
+  line-height: 1.65;
+}
+
+.rules-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.rule-card {
+  padding: 1.55rem;
+  border-radius: 0.28rem;
+}
+
+.rule-card-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  align-items: start;
+  margin-bottom: 1rem;
+}
+
+.rule-card-header span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.2rem;
+  height: 2.2rem;
+  padding-inline: 0.5rem;
+  border: 1px solid rgba(233, 193, 118, 0.28);
+  background: rgba(233, 193, 118, 0.08);
+  color: var(--gold);
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.84rem;
+  line-height: 1;
+}
+
+.rule-card ul {
+  margin: 0;
+  padding-left: 1.08rem;
+}
+
+.rule-card li + li {
+  margin-top: 0.8rem;
+}
+
+#register {
+  position: relative;
+}
+
+.cta-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.95fr);
+  gap: 1.4rem;
+  padding: clamp(1.7rem, 4vw, 2.8rem);
+  border-radius: 0.28rem;
+  background:
+    radial-gradient(circle at top right, rgba(233, 193, 118, 0.1), transparent 22%),
+    linear-gradient(180deg, rgba(30, 21, 16, 0.88), rgba(10, 8, 7, 0.94)),
+    rgba(24, 19, 16, 0.84);
+}
+
+.cta-meta {
+  display: grid;
+  gap: 0.95rem;
+}
+
+.cta-meta div {
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(78, 70, 57, 0.26);
+  background: rgba(35, 26, 21, 0.72);
+}
+
+.cta-meta strong {
+  display: block;
+  margin-top: 0.45rem;
+  color: var(--text);
+  font-size: 1.1rem;
+  line-height: 1.45;
+}
+
+.footer {
+  padding: 0 1rem 2rem;
+  text-align: center;
+  color: rgba(209, 197, 180, 0.65);
+  font-size: 0.92rem;
+}
+
+.footer-note {
+  max-width: 52rem;
+  margin: 0.75rem auto 0;
+}
+
+@media (max-width: 1100px) {
+  .section-heading-split,
+  .overview-grid,
+  .rules-command,
+  .cta-panel,
+  .awards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-stage {
+    min-height: auto;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .floating-badge,
+  .hero-orbit {
+    position: static;
+    width: 100%;
+  }
+
+  .mechanics-grid {
+    gap: 1rem;
+    border: 0;
+    grid-template-columns: 1fr;
+  }
+
+  .mechanic-card,
+  .mechanic-card + .mechanic-card {
+    border-left: 0;
+  }
+
+  .mechanic-card {
+    border-radius: 0.28rem;
+  }
+
+  .mechanic-card:nth-child(2) {
+    margin: 0;
+  }
+
+  .rules-directives {
+    grid-template-columns: 1fr;
+  }
+
+  .timeline::before {
+    left: 1rem;
+    transform: none;
+  }
+
+  .timeline-card,
+  .timeline-card:nth-child(odd),
+  .timeline-card:nth-child(even) {
+    width: auto;
+    margin: 0 0 0 2.35rem;
+    text-align: left;
+  }
+
+  .timeline-card:nth-child(odd)::before,
+  .timeline-card:nth-child(even)::before {
+    left: -1.82rem;
+    right: auto;
+  }
+
+  #awards .section-heading {
+    display: block;
+  }
+
+  #awards .section-heading::after {
+    display: none;
+  }
+}
+
+@media (max-width: 820px) {
+  .content {
+    width: min(1240px, calc(100% - 1.3rem));
+  }
+
+  .site-video-desktop {
+    display: none;
+  }
+
+  .site-video-mobile {
+    display: block;
+    object-position: center center;
+    transform: scale(1.08);
+  }
+
+  .rules-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .scene-shell {
+    opacity: 0;
+    mask-image: radial-gradient(circle at 50% 14%, black 0%, black 22%, transparent 72%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-orbit,
+  .hero-orbit::after,
+  .hero-panel::after,
+  .signal-card::after,
+  .floating-badge::after,
+  .hero-orbit-grid div::after,
+  .manifest-card::after,
+  .mechanic-card::after,
+  .timeline-card::after,
+  .award-card::after,
+  .rule-card::after,
+  .rules-aside::after,
+  .cta-meta div::after {
+    animation: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .page-chrome {
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    padding-block: 0.9rem;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+    position: relative;
+    flex: 0 0 auto;
+  }
+
+  .nav {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.25rem 0 0.2rem;
+    font-size: 0.84rem;
+    letter-spacing: 0.12rem;
+  }
+
+  .nav.nav-open {
+    display: flex;
+  }
+
+  .nav a {
+    width: 100%;
+    padding: 0.8rem 0.95rem;
+    border: 1px solid rgba(233, 193, 118, 0.16);
+    background: rgba(25, 18, 14, 0.74);
+  }
+
+  .section {
+    padding: 4.3rem 0;
+  }
+
+  .hero {
+    min-height: auto;
+    padding-top: 3rem;
+  }
+
+  .content {
+    padding-top: 7.5rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 14vw, 4.8rem);
+  }
+
+  .stats-row {
+    justify-content: center;
+  }
+
+  .stat-chip {
+    min-width: 10.5rem;
+  }
+
+  .hero-panel,
+  .manifest-card,
+  .mechanic-card,
+  .timeline-card,
+  .award-card,
+  .rule-card,
+  .rules-aside,
+  .cta-panel {
+    border-radius: 0.24rem;
+  }
+}

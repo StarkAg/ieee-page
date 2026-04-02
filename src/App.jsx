@@ -1,0 +1,621 @@
+import { Suspense, lazy, useLayoutEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const OceanScene = lazy(() =>
+  import("./components/OceanScene").then((module) => ({ default: module.OceanScene })),
+);
+
+const heroFacts = ["Turing Hall", "First 30 teams", "₹199 per team", "1-5 founders"];
+
+const signalCards = [
+  {
+    title: "Single Allocation",
+    text: "Every startup gets one decisive funding outcome after its first pitch. No second chances, no renegotiation.",
+  },
+  {
+    title: "Alliances & Mutinies",
+    text: "Teams can merge, poach talent, or abandon failing ships during a timed 30-minute restructuring window.",
+  },
+  {
+    title: "Boardroom Finale",
+    text: "Finalists must defend a rebuilt company, not just an idea, in front of a high-pressure jury panel.",
+  },
+];
+
+const overviewPoints = [
+  "Real VC-style funding simulation instead of a standard ideathon.",
+  "Negotiation-first gameplay where mergers and acqui-hires materially change outcomes.",
+  "A final evaluation based on scale, synergy, execution, and market readiness.",
+];
+
+const summitSignals = [
+  {
+    label: "Audience",
+    value: "UG + PG founders",
+  },
+  {
+    label: "Format",
+    value: "One-day summit",
+  },
+  {
+    label: "Round 1",
+    value: "5 min pitch + 3-4 min Q&A",
+  },
+  {
+    label: "Final Round",
+    value: "7 min pitch + 5 min unrestricted Q&A",
+  },
+];
+
+const mechanics = [
+  {
+    index: "01",
+    title: "Open Sea Investment",
+    text: "Teams present once, judges run due diligence, and funding is locked immediately after the first pitch cycle.",
+  },
+  {
+    index: "02",
+    title: "Alliances & Mutinies",
+    text: "A 30-minute strategy phase lets founders merge companies, poach specialists, or walk away from weak ships.",
+  },
+  {
+    index: "03",
+    title: "VC Boardroom",
+    text: "Shortlisted ventures return with their rebuilt company story and face unrestricted investor-style questioning.",
+  },
+];
+
+const schedule = [
+  {
+    time: "09:00 AM - 10:00 AM",
+    phase: "Inauguration",
+    text: "Welcome address, jury introduction, and briefing on the funding simulation and corporate strategy rules.",
+  },
+  {
+    time: "10:00 AM - 12:30 PM",
+    phase: "Round 1: Open Sea Investment",
+    text: "Each crew delivers a 5-minute pitch followed by a 3-4 minute judges-only Q&A. Funding is then locked.",
+  },
+  {
+    time: "12:30 PM - 01:15 PM",
+    phase: "Lunch and Networking",
+    text: "Founders review the board, study competitors, and quietly shape merger or talent-poaching plans.",
+  },
+  {
+    time: "01:15 PM - 01:45 PM",
+    phase: "Round 2: Alliances & Mutinies",
+    text: "Thirty minutes of controlled chaos where mergers, mutinies, and restructuring forms decide the new power map.",
+  },
+  {
+    time: "01:45 PM - 02:15 PM",
+    phase: "Jury Deliberation",
+    text: "The panel reviews combined funding pools, revised rosters, and the strategic strength of each restructured venture.",
+  },
+  {
+    time: "02:15 PM - 04:00 PM",
+    phase: "Final Round: VC Boardroom",
+    text: "Finalists deliver a 7-minute boardroom pitch and face 5 minutes of unrestricted Q&A on scale and viability.",
+  },
+  {
+    time: "04:00 PM - 04:30 PM",
+    phase: "Closing Ceremony",
+    text: "Winners are announced and the summit ends with awards, recognition, and final remarks.",
+  },
+];
+
+const awards = [
+  {
+    title: "Unicorn of the Summit",
+    text: "For the team that secures the strongest post-negotiation position and dominates the final boardroom pitch.",
+  },
+  {
+    title: "Best Innovation Impact",
+    text: "For the venture presenting the sharpest technical or conceptual leap during the summit.",
+  },
+  {
+    title: "Best Social Impact",
+    text: "For the startup with the clearest measurable value for society or the environment.",
+  },
+];
+
+const ruleHighlights = [
+  "Funding belongs to the startup idea, not the member.",
+  "All mergers and mutinies must be submitted in writing.",
+  "Unregistered verbal deals die when the buzzer ends the round.",
+];
+
+const ruleGroups = [
+  {
+    label: "Registration & Conduct",
+    items: [
+      "Registration is capped at the first 30 teams, with a fee of ₹199 per team.",
+      "Every startup may compete with 1 to 5 registered members.",
+      "Harassment, intimidation, or disruptive conduct during negotiations can lead to immediate disqualification.",
+    ],
+  },
+  {
+    label: "Pitch Discipline",
+    items: [
+      "Round 1 pitch time is exactly 5 minutes and judges do not interrupt during the pitch.",
+      "The 3-4 minute Q&A belongs only to the jury panel.",
+      "Once funding is announced after Q&A, that allocation is permanently locked.",
+    ],
+  },
+  {
+    label: "Alliance Rules",
+    items: [
+      "Merged startups combine their Round 1 funding into one shared pool.",
+      "Merged teams must select one unified product or one hybrid concept for the final boardroom.",
+      "A maximum of 6 members may present on stage during the final pitch.",
+    ],
+  },
+  {
+    label: "Mutiny Rules",
+    items: [
+      "Any member may leave their original team if the receiving team accepts them.",
+      "Poached members do not carry their old funding into the new company.",
+      "If all members leave a startup, the original company is bankrupt and its funding is erased.",
+    ],
+  },
+  {
+    label: "Registry Lock-In",
+    items: [
+      "Every alliance or mutiny becomes valid only after submission of a signed Corporate Restructuring Form.",
+      "The team leaders of all parties involved must sign the form.",
+      "When the 30-minute buzzer ends the round, every unregistered verbal agreement is void.",
+    ],
+  },
+  {
+    label: "Final Authority",
+    items: [
+      "Finalists are chosen using post-negotiation funding positions together with jury judgment.",
+      "Boardroom finalists must explain how their alliance or mutiny improved the company’s unicorn potential.",
+      "The organizing committee and jury hold final authority over tallies, conduct, and disputes.",
+    ],
+  },
+];
+
+function App() {
+  const rootRef = useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      const intro = gsap.timeline({
+        defaults: {
+          duration: 0.9,
+          ease: "power3.out",
+        },
+      });
+
+      intro
+        .from(".hero-copy > *", {
+          opacity: 0,
+          y: 38,
+          stagger: 0.1,
+        })
+        .from(
+          ".hero-stage > *",
+          {
+            opacity: 0,
+            y: 42,
+            stagger: 0.12,
+          },
+          "-=0.55",
+        )
+        .from(
+          ".stat-chip",
+          {
+            opacity: 0,
+            scale: 0.92,
+            stagger: 0.06,
+            duration: 0.45,
+          },
+          "-=0.65",
+        );
+
+      gsap.to(".floating-badge", {
+        y: -14,
+        duration: 3.4,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+
+      // gsap.to(".hero-orbit", {
+      //   y: 10,
+      //   x: -8,
+      //   duration: 4.6,
+      //   repeat: -1,
+      //   yoyo: true,
+      //   ease: "sine.inOut",
+      // });
+
+      gsap.utils.toArray(".reveal").forEach((section, index) => {
+        gsap.from(section, {
+          opacity: 0,
+          y: index % 2 === 0 ? 50 : 70,
+          duration: 0.95,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 82%",
+          },
+        });
+      });
+
+      gsap.to(".hero-panel", {
+        rotation: 1.3,
+        transformOrigin: "50% 0%",
+        duration: 3.8,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+
+      gsap.utils
+        .toArray(
+          [
+            ".floating-badge",
+            ".hero-orbit",
+            ".signal-card",
+            ".manifest-card",
+            ".mechanic-card",
+            ".timeline-card",
+            ".award-card",
+            ".rules-aside",
+            ".directive-card",
+            ".rule-card",
+            ".cta-panel",
+            ".cta-meta div",
+          ].join(", "),
+        )
+        .forEach((box, index) => {
+          gsap.to(box, {
+            y: index % 2 === 0 ? -10 : 10,
+            x: index % 3 === 0 ? -4 : 4,
+            rotation: index % 2 === 0 ? -0.6 : 0.6,
+            duration: 4.4 + (index % 4) * 0.45,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+          });
+        });
+    }, rootRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <div className="site-shell" ref={rootRef}>
+      <div className="site-video-shell" aria-hidden="true">
+        <video
+          autoPlay
+          className="site-video site-video-desktop"
+          loop
+          muted
+          playsInline
+          preload="auto"
+        >
+          <source src="/media/startup-pitch-event-bg.mp4" type="video/mp4" />
+        </video>
+        <video
+          autoPlay
+          className="site-video site-video-mobile"
+          loop
+          muted
+          playsInline
+          preload="auto"
+        >
+          <source src="/media/one-piece-phone-bg.mp4" type="video/mp4" />
+        </video>
+        <div className="site-video-overlay" />
+      </div>
+
+      <div className="scene-shell" aria-hidden="true">
+        <Suspense fallback={<div className="scene-fallback" />}>
+          <OceanScene />
+        </Suspense>
+      </div>
+
+      <div className="scene-aura scene-aura-left" aria-hidden="true" />
+      <div className="scene-aura scene-aura-right" aria-hidden="true" />
+
+      <header className="page-chrome">
+        <a className="brand" href="#hero">
+          ONE PIECE
+        </a>
+        <button
+          aria-expanded={menuOpen}
+          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+          className={`nav-toggle${menuOpen ? " is-open" : ""}`}
+          onClick={() => setMenuOpen((open) => !open)}
+          type="button"
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+        <nav className={`nav${menuOpen ? " nav-open" : ""}`}>
+          <a href="#overview" onClick={() => setMenuOpen(false)}>
+            Overview
+          </a>
+          <a href="#mechanics" onClick={() => setMenuOpen(false)}>
+            Mechanics
+          </a>
+          <a href="#schedule" onClick={() => setMenuOpen(false)}>
+            Schedule
+          </a>
+          <a href="#rules" onClick={() => setMenuOpen(false)}>
+            Rules
+          </a>
+          <a href="#register" onClick={() => setMenuOpen(false)}>
+            Register
+          </a>
+        </nav>
+      </header>
+
+      <main className="content">
+        <section className="hero section" id="hero">
+          <div className="hero-copy">
+            <p className="eyebrow eyebrow-signal">Flagship Startup Pitch Event 2026</p>
+            <h1>
+              <span className="hero-title-top">ONE PIECE:</span>
+              <span className="hero-title-mark">Treasure Hunt</span>
+              <span className="hero-title-bottom">for Unicorns</span>
+            </h1>
+            <p className="hero-text">
+              A One Piece themed startup summit where crews pitch for a single locked funding
+              allocation, survive a live round of alliances and mutinies, and return as rebuilt
+              ventures for the final boardroom showdown.
+            </p>
+
+            <div className="hero-actions">
+              <a className="button button-primary" href="#register">
+                Set Sail & Register
+              </a>
+              <a className="button button-secondary" href="#rules">
+                View Logbook
+              </a>
+            </div>
+
+            <div className="stats-row">
+              {heroFacts.map((item) => (
+                <span className="stat-chip" key={item}>
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="hero-stage">
+            <aside className="hero-panel">
+              <p className="panel-kicker">Event Premise</p>
+              <h2>Pitch. Merge. Mutiny. Rebuild.</h2>
+              <p>
+                Judges play venture capitalists, the treasury is fixed, and every strategic move in
+                the negotiation round changes who reaches the final boardroom.
+              </p>
+
+              <div className="panel-facts">
+                {signalCards.map((item) => (
+                  <article className="signal-card" key={item.title}>
+                    <h3>{item.title}</h3>
+                    <p>{item.text}</p>
+                  </article>
+                ))}
+              </div>
+            </aside>
+
+            <div className="floating-badge">
+              <span>Live format</span>
+              <strong>Three-round startup war room</strong>
+            </div>
+
+            <article className="hero-orbit">
+              <p className="panel-kicker">Command Deck</p>
+              <div className="hero-orbit-grid">
+                {summitSignals.map((item) => (
+                  <div key={item.label}>
+                    <span>{item.label}</span>
+                    <strong>{item.value}</strong>
+                  </div>
+                ))}
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section className="section reveal" id="overview">
+          <div className="section-heading">
+            <p className="eyebrow">The Manifesto</p>
+            <h2>A student startup summit run like a high-stakes sea negotiation</h2>
+          </div>
+
+          <div className="overview-grid">
+            <article className="manifest-card manifest-card-copy">
+              <p className="card-tag">Why this format</p>
+              <p className="manifest-body">
+                Traditional demo days test presentation. ONE PIECE tests judgment under pressure.
+                Teams are forced to think like founders, investors, and negotiators in the same day.
+              </p>
+              <ul className="manifest-list">
+                {overviewPoints.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </article>
+
+            <article className="manifest-card manifest-card-quote">
+              <p className="card-tag">Event Lens</p>
+              <blockquote>
+                Your startup is the ship. Funding is the wind. Strategy decides whether you cross the
+                grand line or sink before sunset.
+              </blockquote>
+            </article>
+
+            <article className="manifest-card manifest-card-signal">
+              <p className="card-tag">Crew Briefing</p>
+              <h3>What teams should bring</h3>
+              <p>
+                A sharp deck, a credible product path, a defensible business model, and a crew that
+                can survive mergers, poaching, and boardroom scrutiny.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section className="section reveal" id="mechanics">
+          <div className="section-heading section-heading-split">
+            <div>
+              <p className="eyebrow">Mechanics</p>
+              <h2>The three-part event arc</h2>
+            </div>
+            <p className="section-copy">
+              Funding decisions happen early. Strategy determines survival. Only the strongest rebuilt
+              company gets to finish the voyage at full scale.
+            </p>
+          </div>
+
+          <div className="mechanics-grid">
+            {mechanics.map((item) => (
+              <article className="mechanic-card" key={item.title}>
+                <span>{item.index}</span>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="section reveal" id="schedule">
+          <div className="section-heading section-heading-split">
+            <div>
+              <p className="eyebrow">Voyage Timeline</p>
+              <h2>Summit schedule</h2>
+            </div>
+            <p className="section-copy">
+              A one-day format built to escalate from structured pitches into controlled corporate
+              chaos before the boardroom finale.
+            </p>
+          </div>
+
+          <div className="timeline">
+            {schedule.map((item) => (
+              <article className="timeline-card" key={`${item.time}-${item.phase}`}>
+                <p className="timeline-time">{item.time}</p>
+                <h3>{item.phase}</h3>
+                <p>{item.text}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="section reveal" id="awards">
+          <div className="section-heading">
+            <p className="eyebrow">The Spoils</p>
+            <h2>Awards crews are chasing</h2>
+          </div>
+
+          <div className="awards-grid">
+            {awards.map((award) => (
+              <article className="award-card" key={award.title}>
+                <p className="card-tag">Recognition</p>
+                <h3>{award.title}</h3>
+                <p>{award.text}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="section reveal" id="rules">
+          <div className="section-heading section-heading-split">
+            <div>
+              <p className="eyebrow">Rulebook</p>
+              <h2>Rules of engagement</h2>
+            </div>
+            <p className="section-copy">
+              This event only works if every funding move, roster shift, and merger is formally
+              documented. The rulebook is the command system behind the entire summit.
+            </p>
+          </div>
+
+          <div className="rules-command">
+            <aside className="rules-aside">
+              <p className="card-tag">Critical directives</p>
+              <h3>The negotiation round only matters if it is documented.</h3>
+              <p>
+                The rulebook is central to the event format. Funding, roster movement, and final
+                advancement all depend on what is officially registered with the organizers.
+              </p>
+            </aside>
+
+            <div className="rules-directives">
+              {ruleHighlights.map((item, index) => (
+                <article className="directive-card" key={item}>
+                  <span>{`0${index + 1}`}</span>
+                  <p>{item}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div className="rules-grid">
+            {ruleGroups.map((group, index) => (
+              <article className="rule-card" key={group.label}>
+                <div className="rule-card-header">
+                  <span>{`0${index + 1}`}</span>
+                  <h3>{group.label}</h3>
+                </div>
+                <ul>
+                  {group.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="section reveal" id="register">
+          <div className="cta-panel">
+            <div>
+              <p className="eyebrow">Registration Call</p>
+              <h2>Build your crew and claim a place on the board</h2>
+              <p className="cta-text">
+                Open to undergraduate and postgraduate students with prototypes or MVP-stage
+                startups. Bring a venture worth backing and a crew capable of surviving restructures.
+              </p>
+            </div>
+
+            <div className="cta-meta">
+              <div>
+                <span>Eligible Teams</span>
+                <strong>1-5 founders</strong>
+              </div>
+              <div>
+                <span>Registration</span>
+                <strong>First 30 teams · ₹199</strong>
+              </div>
+              <div>
+                <span>Venture Stage</span>
+                <strong>Prototype to MVP</strong>
+              </div>
+              <div>
+                <span>Venue</span>
+                <strong>Turing Hall</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="footer" />
+    </div>
+  );
+}
+
+export default App;
